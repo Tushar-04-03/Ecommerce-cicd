@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: ecommerce
-          image: YOUR_DOCKERHUB_USERNAME/ecommerce-app:latest   # Replace YOUR_DOCKERHUB_USERNAME
+          image: tushar327/ecommerce-app:latest   # Replace YOUR_DOCKERHUB_USERNAME
           ports:
             - containerPort: 5000
           resources:
