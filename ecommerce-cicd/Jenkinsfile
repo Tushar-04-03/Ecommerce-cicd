@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USERNAME  = 'YOUR_DOCKERHUB_USERNAME'         // Replace this
+        DOCKERHUB_USERNAME  = 'tushar327'         // Replace this
         APP_NAME            = 'ecommerce-app'
         IMAGE_NAME          = "${DOCKERHUB_USERNAME}/${APP_NAME}"
         IMAGE_TAG           = "${BUILD_NUMBER}"
