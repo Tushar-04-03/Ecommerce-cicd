@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - K8s E-Commerce Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+    header { background: #1F5C99; color: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 24px; }
+    nav a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; }
+    .hero { background: linear-gradient(135deg, #1F5C99, #2d82d2); color: white; padding: 60px 32px; text-align: center; }
+    .hero h2 { font-size: 36px; margin-bottom: 12px; }
+    .hero p { font-size: 18px; opacity: 0.9; margin-bottom: 24px; }
+    .hero a { background: white; color: #1F5C99; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+    .section { padding: 40px 32px; max-width: 1100px; margin: 0 auto; }
+    .section h3 { font-size: 22px; margin-bottom: 20px; color: #1F5C99; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+    .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card h4 { margin-bottom: 8px; font-size: 16px; }
+    .card .price { color: #1F5C99; font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+    .card .stock { font-size: 12px; color: #888; margin-bottom: 12px; }
+    .card button { background: #1F5C99; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; }
+    .card button:hover { background: #174a80; }
+    .badge { display: inline-block; background: #e8f0fb; color: #1F5C99; font-size: 11px; padding: 3px 8px; border-radius: 12px; margin-bottom: 8px; }
+    .infobanner { background: #e8f4e8; border-left: 4px solid #2a9d2a; padding: 16px 32px; font-size: 14px; color: #1a5c1a; }
+    footer { background: #222; color: #aaa; text-align: center; padding: 20px; font-size: 13px; margin-top: 40px; }
+    #toast { display:none; position:fixed; bottom:24px; right:24px; background:#2a9d2a; color:white; padding:12px 20px; border-radius:8px; font-size:14px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>ShopEasy</h1>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/products">Products</a>
+    <a href="/api/orders">Orders API</a>
+    <a href="/metrics">Metrics</a>
+    <a href="/health">Health</a>
+  </nav>
+</header>
+
+<div class="infobanner">
+  Deployed on <strong>Kubernetes (Minikube)</strong> with Jenkins CI/CD, Prometheus monitoring, and NGINX Ingress.
+</div>
+
+<div class="hero">
+  <h2>Welcome to ShopEasy</h2>
+  <p>A demo e-commerce app running inside Kubernetes</p>
+  <a href="/products">Browse Products</a>
+</div>
+
+<div class="section">
+  <h3>Featured Products</h3>
+  <div class="grid">
+    {% for product in products[:4] %}
+    <div class="card">
+      <span class="badge">{{ product.category }}</span>
+      <h4>{{ product.name }}</h4>
+      <div class="price">₹{{ product.price }}</div>
+      <div class="stock">Stock: {{ product.stock }} units</div>
+      <button onclick="placeOrder({{ product.id }}, '{{ product.name }}')">Add to Cart</button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<footer>ShopEasy Demo | Running on Kubernetes | CI/CD by Jenkins | Monitored by Prometheus + Grafana</footer>
+
+<script>
+function placeOrder(id, name) {
+  fetch('/api/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ product_id: id })
+  })
+  .then(r => r.json())
+  .then(data => {
+    const t = document.getElementById('toast');
+    t.textContent = data.message ? `Order placed for ${name}!` : data.error;
+    t.style.display = 'block';
+    t.style.background = data.message ? '#2a9d2a' : '#c0392b';
+    setTimeout(() => t.style.display = 'none', 3000);
+  });
+}
+</script>
+</body>
+</html>
